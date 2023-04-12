@@ -12,8 +12,8 @@ import java.util.List;
 @Service
 public class DataServiceImpl implements DataService{
     String url = "jdbc:mysql://localhost:3306/STRCUBE?sessionVariables=sql_mode='NO_ENGINE_SUBSTITUTION'&jdbcCompliantTruncation=false&createDatabaseIfNotExist=true";
-    String username = "hansal"; // replace with your username
-    String password = "2017033800105146"; // replace with your password
+    String username = "root"; // replace with your username
+    String password = "KVrsmck@21"; // replace with your password
 
     @Override
     public List<List<Object>> sendData(String queryId,String type) {
@@ -22,9 +22,11 @@ public class DataServiceImpl implements DataService{
              Statement stmt = conn.createStatement()) {
             ResultSet rs;
             if(type.equals("logs"))
-            rs= stmt.executeQuery("select * from QUERY_LOG_"+queryId);
+                rs= stmt.executeQuery("select * from QUERY_LOG_"+queryId);
+            else if(type.equals("queries"))
+                rs=stmt.executeQuery("select * from SUMMARY");
             else
-            rs = stmt.executeQuery("select * from QUERY_RESULT_"+queryId);
+                rs = stmt.executeQuery("select * from QUERY_RESULT_"+queryId);
             ResultSetMetaData rsMetaData=rs.getMetaData();
             int count = rsMetaData.getColumnCount();
             List<Object> header=new ArrayList<>();

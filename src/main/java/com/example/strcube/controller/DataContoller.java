@@ -22,5 +22,8 @@ public class DataContoller {
     }   @GetMapping("get-data")
     public List<List<Object>> sendData(@RequestParam("queryId") String queryId){
         return dataService.sendData(queryId,"data");
+    }  @GetMapping("get-queries")
+    public List<List<Object>> sendData(){
+        return dataService.sendData("q1","queries");
     }
 }
