@@ -6,7 +6,5 @@ import java.util.HashMap;
 import java.util.List;
 
 public interface DataService {
-    List<DataDto> sendData();
-
-    List<List<Object>> sendGroupByData(String queryId);
+    List<List<Object>> sendData(String queryId,String type);
 }

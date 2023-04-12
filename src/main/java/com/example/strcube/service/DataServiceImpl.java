@@ -11,70 +11,20 @@ import java.util.List;
 
 @Service
 public class DataServiceImpl implements DataService{
-    String url = "jdbc:mysql://172.16.201.190:3306/STRCUBE?sessionVariables=sql_mode='NO_ENGINE_SUBSTITUTION'&jdbcCompliantTruncation=false&createDatabaseIfNotExist=true";
-    String username = "venkatesh"; // replace with your username
-    String password = "KVrsmck@21"; // replace with your password
-    @Override
-    public List<DataDto> sendData() {
-        List<DataDto> dataDtos=new ArrayList<>();
-        try (Connection conn = DriverManager.getConnection(url, username, password);
-             Statement stmt = conn.createStatement();
-             Statement stmt2=conn.createStatement();) {
-            ResultSet rs = stmt.executeQuery("select * from Summary");
-            while(rs.next()){
-                ResultSet rs2 = stmt2   .executeQuery("select * from GroupByMapping where Group_Id="+rs.getInt("Group_Id"));
-                List<String> groupByAttributes=new ArrayList<>();
-                while(rs2.next()){
-                    groupByAttributes.add((rs2.getString(3)));
-                }
-                DataDto dataDto=DataDto.builder()
-                        .queryId(rs.getInt("Query_Id"))
-                        .aggregateFunction(rs.getString("Aggregate_Function"))
-                        .factVariable(rs.getString("Fact_Variable"))
-                        .groupByAttributes(groupByAttributes)
-                        .result(rs.getDouble("Result"))
-                        .build();
-                dataDtos.add(dataDto);
-//                System.out.print("QueryId "+rs.getInt("Query_Id"));
-//                System.out.print("fact "+rs.getString("Fact_Variable"));
-//                System.out.print("fun "+rs.getString("Aggregate_Function"));
-//                System.out.print("gid "+rs.getInt("Group_Id"));
-//                System.out.println("result "+rs.getDouble("Result"));
-            }
-
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-        return dataDtos;
-    }
+    String url = "jdbc:mysql://localhost:3306/STRCUBE?sessionVariables=sql_mode='NO_ENGINE_SUBSTITUTION'&jdbcCompliantTruncation=false&createDatabaseIfNotExist=true";
+    String username = "hansal"; // replace with your username
+    String password = "2017033800105146"; // replace with your password
 
     @Override
-    public List<List<Object>> sendGroupByData(String queryId) {
-//        List<Object> objects=new ArrayList<>();
-//        List<HashMap<String,Object>> list=new ArrayList<>();
-//        try (Connection conn = DriverManager.getConnection(url, username, password);
-//             Statement stmt = conn.createStatement()) {
-//            ResultSet rs = stmt.executeQuery("select * from GroupByResultQueryId_"+queryId);
-//            ResultSetMetaData rsMetaData=rs.getMetaData();
-//            int count = rsMetaData.getColumnCount();
-//
-//            while(rs.next()){
-//                HashMap<String,Object> map=new HashMap<>();
-//                for(int i = 1; i<=count; i++) {
-//                    map.put(rsMetaData.getColumnName(i),rs.getObject(i));
-//                }
-//                list.add(map);
-//            }
-//        }
-//        catch (Exception e){
-//            e.printStackTrace();
-//        }
-//        return list;
+    public List<List<Object>> sendData(String queryId,String type) {
         List<List<Object>> result=new ArrayList<>();
         try (Connection conn = DriverManager.getConnection(url, username, password);
              Statement stmt = conn.createStatement()) {
-            ResultSet rs = stmt.executeQuery("select * from GroupByResultQueryId_"+queryId);
+            ResultSet rs;
+            if(type.equals("logs"))
+            rs= stmt.executeQuery("select * from QUERY_LOG_"+queryId);
+            else
+            rs = stmt.executeQuery("select * from QUERY_RESULT_"+queryId);
             ResultSetMetaData rsMetaData=rs.getMetaData();
             int count = rsMetaData.getColumnCount();
             List<Object> header=new ArrayList<>();
@@ -94,6 +44,5 @@ public class DataServiceImpl implements DataService{
             e.printStackTrace();
         }
         return result;
-
     }
 }

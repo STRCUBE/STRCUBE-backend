@@ -16,12 +16,11 @@ import java.util.List;
 @CrossOrigin("*")
 public class DataContoller {
     private final DataService dataService;
-    @GetMapping("get-data")
-    public List<DataDto> sendData(){
-        return dataService.sendData();
-    }
-    @GetMapping("get-group-by-data")
+    @GetMapping("get-logs")
+    public List<List<Object>> sendLogs(@RequestParam("queryId") String queryId){
+        return dataService.sendData(queryId,"logs");
+    }   @GetMapping("get-data")
     public List<List<Object>> sendData(@RequestParam("queryId") String queryId){
-        return dataService.sendGroupByData(queryId);
+        return dataService.sendData(queryId,"data");
     }
 }
