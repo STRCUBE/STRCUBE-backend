@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SDatabase xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <StreamProperties>
+    <StreamHub>
+      <DataSources>
+        <DataSource DS_id="DS-01">
+          <WindowStorageProperties>
+            <size units="rows">5</size>
+            <time units="seconds">20</time>
+            <velocity units="rows">3</velocity>
+            <type>sliding</type>
+            <origin>latest</origin>
+          </WindowStorageProperties>
+          <Fileproperties>
+            <FilePath>stream</FilePath>
+            <FileType>.csv</FileType>
+            <FileMode>read</FileMode>
+            <FileAppend>true</FileAppend>
+          </Fileproperties>
+          <FileContents>
+            <DimensionVariableKeys>
+              <DimensionVariableKey type="VARCHAR(255)" DimensionTable="PRODUCT">PRODUCTKEY</DimensionVariableKey>
+              <DimensionVariableKey type="VARCHAR(255)" DimensionTable="REPORTINGDATE">TIMEKEY</DimensionVariableKey>
+              <DimensionVariableKey type="VARCHAR(255)" DimensionTable="CUSTOMER">CUSTOMERKEY</DimensionVariableKey>
+              <DimensionVariableKey type="VARCHAR(255)" DimensionTable="SALESPERSON">SALESPERSONKEY</DimensionVariableKey>
+            </DimensionVariableKeys>
+            <FactVariables>
+              <FactVariable type="DECIMAL" property="NOT NULL">ORDER_VALUE</FactVariable>
+              <FactVariable type="DECIMAL" property="NOT NULL">COST_VALUE</FactVariable>
+              <FactVariable type="DECIMAL" property="NOT NULL">SALE_UNITS</FactVariable>
+            </FactVariables>
+          </FileContents>
+        </DataSource>
+      </DataSources>
+    </StreamHub>
+    <StreamProcessor>
+      <Storageproperties>
+        <Summary>
+          <SummaryProperties>
+            <SummaryItem type="VARCHAR(255)" property="PRIMARY KEY">Query_Id</SummaryItem>
+            <SummaryItem type="VARCHAR(255)" property="NOT NULL">Type</SummaryItem>
+            <SummaryItem type="VARCHAR(255)" property="NOT NULL">Query</SummaryItem>
+            <SummaryItem type="VARCHAR(255)" property="NOT NULL">Result_Table</SummaryItem>
+          </SummaryProperties>
+          <GroupProperties>
+            <GroupItem type="INTEGER" property="PRIMARY KEY AUTO_INCREMENT">Id</GroupItem>
+            <GroupItem type="INTEGER" property="NOT NULL">Group_Id</GroupItem>
+            <GroupItem type="VARCHAR(255)" property="NOT NULL">Attribute</GroupItem>
+          </GroupProperties>
+        </Summary>
+        <Log>
+          <LogItem type="INTEGER" property="PRIMARY KEY AUTO_INCREMENT">Log_Id</LogItem>
+          <LogItem type="DATETIME" property="NOT NULL">TimeStamp</LogItem>
+          <LogItem type="INTEGER" property="NOT NULL">Query_Id</LogItem>
+          <LogItem type="VARCHAR(255)" property="NOT NULL">Fact_Variable</LogItem>
+          <LogItem type="VARCHAR(255)" property="NOT NULL">Aggregate_Function</LogItem>
+          <LogItem type="DECIMAL(15,5)" property="NOT NULL">Window_Result</LogItem>
+        </Log>
+      </Storageproperties>
+
+      <QueryRepositories>
+        <QueryRepo type="aggregate">
+<!--          Performs all these aggregate operations on those fact variables-->
+          <AggregateFunctions>
+            <AggregateFunction>SUM</AggregateFunction>
+            <AggregateFunction>COUNT</AggregateFunction>
+            <AggregateFunction>AVG</AggregateFunction>
+            <AggregateFunction>MIN</AggregateFunction>
+            <AggregateFunction>MAX</AggregateFunction>
+          </AggregateFunctions>
+          <Query id="a1">
+            <FactVariable>SALE_UNITS</FactVariable>
+            <QueryLabel>Aggregate Analytics of Sale Units</QueryLabel>
+          </Query>
+          <Query id="a2">
+            <FactVariable>COST_VALUE</FactVariable>
+            <QueryLabel>Aggregate Analytics of Cost Value</QueryLabel>
+          </Query>
+          <Query id="a3">
+            <FactVariable>ORDER_VALUE</FactVariable>
+            <QueryLabel>Aggregate Analytics of Order Value</QueryLabel>
+          </Query>
+        </QueryRepo>
+        <QueryRepo type="generic">
+          <Query id="q1">
+            <AggregateFunction>SUM</AggregateFunction>
+            <FactVariable>SALE_UNITS</FactVariable>
+            <QueryScript>select CUSTOMERCITY ,CUSTOMERTYPE  , SUM(SALE_UNITS) as result  from MergeView group by CUSTOMERCITY ,CUSTOMERTYPE</QueryScript>
+            <QueryLabel>Total Sale Units with respect to Customer City and Type of the Customer</QueryLabel>
+          </Query>
+          <Query id="q2">
+            <AggregateFunction>COUNT</AggregateFunction>
+            <FactVariable>SALE_UNITS</FactVariable>
+            <QueryScript>select CATEGORY, COUNT(SALE_UNITS) as result  from MergeView group by CATEGORY</QueryScript>
+            <QueryLabel>Total No. of Sale Units with respect to Product Category</QueryLabel>
+          </Query>
+          <Query id="q3">
+            <AggregateFunction>MIN</AggregateFunction>
+            <FactVariable>SALE_UNITS</FactVariable>
+            <QueryScript>select SALESPERSONTYPE, MIN(SALE_UNITS) as result  from MergeView group by SALESPERSONTYPE</QueryScript>
+            <QueryLabel>Minimum Sale Units with respect to Type of the Sales Person</QueryLabel>
+          </Query>
+          <Query id="q4">
+            <AggregateFunction>MAX</AggregateFunction>
+            <FactVariable>SALE_UNITS</FactVariable>
+            <QueryScript>select SALESPERSONTYPE, MAX(SALE_UNITS) as result  from MergeView group by SALESPERSONTYPE</QueryScript>
+            <QueryLabel>Maximum Sale Units with respect to Type of the Sales Person</QueryLabel>
+          </Query>
+          <Query id="q5">
+            <AggregateFunction>MAX</AggregateFunction>
+            <FactVariable>ORDER_VALUE</FactVariable>
+            <QueryScript>select CUSTOMERCITY ,CUSTOMERTYPE  , MAX(ORDER_VALUE) as result  from MergeView group by CUSTOMERCITY ,CUSTOMERTYPE</QueryScript>
+            <QueryLabel>Maximum Order Value with respect to Customer City and Type of the Customer</QueryLabel>
+          </Query>
+           <Query id="q6">
+             <AggregateFunction>AVG</AggregateFunction>-->
+             <FactVariable>ORDER_VALUE</FactVariable>-->
+             <QueryScript>select CATEGORY, AVG(ORDER_VALUE) as result  from MergeView group by CATEGORY</QueryScript>
+             <QueryLabel>Average Order Value with respect to Product Category</QueryLabel>
+          </Query>
+          <Query id="q7">
+            <AggregateFunction>AVG</AggregateFunction>
+            <FactVariable>COST_VALUE</FactVariable>
+            <QueryScript>select SALESPERSONTYPE, AVG(COST_VALUE) as result  from MergeView group by SALESPERSONTYPE</QueryScript>
+            <QueryLabel>Average Cost value with respect to Type of the Sales Person</QueryLabel>
+          </Query>
+
+          <!--  using WHERE clause      -->
+          <Query id="q8">
+            <AggregateFunction>MIN</AggregateFunction>
+            <FactVariable>COST_VALUE</FactVariable>
+            <QueryScript>select SALESPERSONTYPE, MIN(COST_VALUE) as result  from MergeView where SALESPERSONEXPERIENCE > 2 group by SALESPERSONTYPE</QueryScript>
+            <QueryLabel>Minimum Cost Value with respect to Type of the Sales Person where Sales Person with Experience more than 2 years to be considered.</QueryLabel>
+          </Query>
+        </QueryRepo>
+      </QueryRepositories>
+
+    </StreamProcessor>
+  </StreamProperties>
+  <DWHProperties>
+    <DimensionalProperties>
+      <CuboidProperties>
+        <CuboidType>Iceberg Cuboid</CuboidType>
+        <AggregateFunctions>
+          <AggregateFunction>SUM</AggregateFunction>
+          <AggregateFunction>COUNT</AggregateFunction>
+          <AggregateFunction>AVG</AggregateFunction>
+          <AggregateFunction>MIN</AggregateFunction>
+          <AggregateFunction>MAX</AggregateFunction>
+        </AggregateFunctions>
+        <Dimensions>
+          <Dimension>CATEGORY</Dimension>
+          <Dimension>MONTH</Dimension>
+          <Dimension>YEAR</Dimension>
+        </Dimensions>
+        <FactVariables>
+          <FactVariable>ORDER_VALUE</FactVariable>
+          <FactVariable>COST_VALUE</FactVariable>
+          <FactVariable>SALE_UNITS</FactVariable>
+        </FactVariables>
+        <ComputeType>Auto-Compute</ComputeType>
+        <QueryProcessing>Auto-Process</QueryProcessing>
+      </CuboidProperties>
+    </DimensionalProperties>
+    <DimensionTables>
+      <DimensionTable name="PRODUCT">
+        <DimensionVariable type="VARCHAR(255)" property="PRIMARY KEY">PRODUCTKEY</DimensionVariable>
+        <DimensionVariable type="VARCHAR(255)" property="NOT NULL">PRODUCTNAME</DimensionVariable>
+        <DimensionVariable type="VARCHAR(255)" property="NOT NULL">CATEGORY</DimensionVariable>
+      </DimensionTable>
+      <DimensionTable name="REPORTINGDATE">
+        <DimensionVariable type="VARCHAR(255)" property="PRIMARY KEY">TIMEKEY</DimensionVariable>
+        <DimensionVariable type="VARCHAR(8)" property="NOT NULL">Date</DimensionVariable>
+        <DimensionVariable type="INT" property="NOT NULL">DAY</DimensionVariable>
+        <DimensionVariable type="INT" property="NOT NULL">MONTH</DimensionVariable>
+        <DimensionVariable type="INT" property="NOT NULL">YEAR</DimensionVariable>
+        <DimensionVariable type="INT" property="NOT NULL">WEEKDAY</DimensionVariable>
+      </DimensionTable>
+      <DimensionTable name="CUSTOMER">
+        <DimensionVariable type="VARCHAR(255)" property="PRIMARY KEY">CUSTOMERKEY</DimensionVariable>
+        <DimensionVariable type="VARCHAR(255)" property="NOT NULL">CUSTOMERCITY</DimensionVariable>
+        <DimensionVariable type="VARCHAR(255)" property="NOT NULL">CUSTOMERTYPE</DimensionVariable>
+      </DimensionTable>
+      <DimensionTable name="SALESPERSON">
+        <DimensionVariable type="VARCHAR(255)" property="PRIMARY KEY">SALESPERSONKEY</DimensionVariable>
+        <DimensionVariable type="VARCHAR(255)" property="NOT NULL">SALESPERSONTYPE</DimensionVariable>
+        <DimensionVariable type="VARCHAR(255)" property="NOT NULL">SALESPERSONEXPERIENCE</DimensionVariable>
+      </DimensionTable>
+    </DimensionTables>
+    <FactVariables>
+      <FactVariable>ORDER_VALUE</FactVariable>
+      <FactVariable>COST_VALUE</FactVariable>
+      <FactVariable>SALE_UNITS</FactVariable>
+    </FactVariables>
+<!--    <Facts>-->
+<!--      <Fact>-->
+<!--        <DimensionValue>string</DimensionValue>-->
+<!--        <FactVariable name="string">-4729239.7650942</FactVariable>-->
+<!--      </Fact>-->
+<!--    </Facts>-->
+<!--    <AggregateFunctions>-->
+<!--      <AggregateFunction>string</AggregateFunction>-->
+<!--    </AggregateFunctions>-->
+<!--    <QueryList>-->
+<!--      <Query id="01">-->
+<!--        <AggregateFunction>sum</AggregateFunction>-->
+<!--        <FactVariable>ORDER_VALUE</FactVariable>-->
+<!--      </Query>-->
+<!--      <Query id="02">-->
+<!--        <AggregateFunction>sum</AggregateFunction>-->
+<!--        <FactVariable>COST_VALUE</FactVariable>-->
+<!--      </Query>-->
+<!--      <Query id="03">-->
+<!--        <AggregateFunction>sum</AggregateFunction>-->
+<!--        <FactVariable>SALE_UNITS</FactVariable>-->
+<!--      </Query>-->
+<!--    </QueryList>-->
+  </DWHProperties>
+</SDatabase>

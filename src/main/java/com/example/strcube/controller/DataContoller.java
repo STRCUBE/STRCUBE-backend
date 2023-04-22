@@ -1,13 +1,15 @@
 package com.example.strcube.controller;
 
 import com.example.strcube.DTO.DataDto;
+import com.example.strcube.DTO.DataDto2;
 import com.example.strcube.service.DataService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,5 +27,13 @@ public class DataContoller {
     }  @GetMapping("get-queries")
     public List<List<Object>> sendData(){
         return dataService.sendData("q1","queries");
+    }
+    @GetMapping("get-all")
+    public ResponseEntity<Object> getAll(){
+        return new ResponseEntity<>(dataService.getAll(), HttpStatus.OK);
+    }
+    @GetMapping("get-something")
+    public ResponseEntity<Object> getSomething(@RequestBody DataDto2 dataDto2) throws NoSuchAlgorithmException {
+        return new ResponseEntity<>(dataService.getSomething(dataDto2),HttpStatus.OK);
     }
 }
