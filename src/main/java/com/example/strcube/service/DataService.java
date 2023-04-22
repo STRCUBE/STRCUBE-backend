@@ -12,5 +12,5 @@ public interface DataService {
 
     HashMap<String,List<String>> getAll();
 
-    List<List<Object>> getSomething(DataDto2 dataDto2) throws NoSuchAlgorithmException;
+    List<List<Object>> getSomething(DataDto2 dataDto2,String type) throws NoSuchAlgorithmException;
 }

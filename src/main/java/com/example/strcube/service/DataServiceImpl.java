@@ -98,7 +98,7 @@ public class DataServiceImpl implements DataService{
     }
 
     @Override
-    public List<List<Object>> getSomething(DataDto2 dataDto2) throws NoSuchAlgorithmException {
+    public List<List<Object>> getSomething(DataDto2 dataDto2,String type) throws NoSuchAlgorithmException {
         List<String> dimensions=dataDto2.getDimensions();
         Collections.sort(dimensions);
         String dimCombination="";
@@ -118,7 +118,8 @@ public class DataServiceImpl implements DataService{
             System.out.println(sql);
             rs.next();
            String queryId=rs.getString(1);
-           return sendData(queryId,"data");
+
+           return type.equals("logs")?sendData(queryId,"logs"):sendData(queryId,"data");
 
         }
         catch (Exception e){
@@ -126,6 +127,7 @@ public class DataServiceImpl implements DataService{
         }
         return null;
     }
+
 
     public static String generateHash(String dimCombination, String aggregateFunction , String factV) throws NoSuchAlgorithmException {
 

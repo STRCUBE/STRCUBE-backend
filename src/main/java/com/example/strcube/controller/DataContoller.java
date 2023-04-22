@@ -34,6 +34,10 @@ public class DataContoller {
     }
     @PostMapping("get-something")
     public ResponseEntity<Object> getSomething(@RequestBody DataDto2 dataDto2) throws NoSuchAlgorithmException {
-        return new ResponseEntity<>(dataService.getSomething(dataDto2),HttpStatus.OK);
+        return new ResponseEntity<>(dataService.getSomething(dataDto2,"simple"),HttpStatus.OK);
+    }
+    @PostMapping("get-something-logs")
+    public ResponseEntity<Object> getSomethingLogs(@RequestBody DataDto2 dataDto2) throws NoSuchAlgorithmException {
+        return new ResponseEntity<>(dataService.getSomething(dataDto2,"logs"),HttpStatus.OK);
     }
 }
