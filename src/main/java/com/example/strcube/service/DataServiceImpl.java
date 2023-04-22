@@ -20,7 +20,7 @@ import java.util.*;
 public class DataServiceImpl implements DataService{
     String url = "jdbc:mysql://localhost:3306/STRCUBE?sessionVariables=sql_mode='NO_ENGINE_SUBSTITUTION'&jdbcCompliantTruncation=false&createDatabaseIfNotExist=true";
     String username = "root"; // replace with your username
-    String password = "IAMROOT"; // replace with your password
+    String password = "KVrsmck@21"; // replace with your password
 
     @Override
     public List<List<Object>> sendData(String queryId,String type) {

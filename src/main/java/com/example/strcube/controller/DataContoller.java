@@ -32,7 +32,7 @@ public class DataContoller {
     public ResponseEntity<Object> getAll(){
         return new ResponseEntity<>(dataService.getAll(), HttpStatus.OK);
     }
-    @GetMapping("get-something")
+    @PostMapping("get-something")
     public ResponseEntity<Object> getSomething(@RequestBody DataDto2 dataDto2) throws NoSuchAlgorithmException {
         return new ResponseEntity<>(dataService.getSomething(dataDto2),HttpStatus.OK);
     }
